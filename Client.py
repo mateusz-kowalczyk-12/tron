@@ -13,22 +13,35 @@ class Client:
         self.color = None
         self.socket = None
         self.UI = UI()
+        self.is_game_won = [None]
 
         while True:
             self.UI.display_menu()
             self.connect_to_server()
             server_communication_thread = Thread(target=self.communicate_with_server)
             server_communication_thread.start()
-            self.UI.display_waiting_room()
-            self.UI.display_board()
-            break
 
-        server_communication_thread.join()
+            self.UI.display_waiting_room()
+            self.UI.display_board(self)
+            server_communication_thread.join()
+
+            if self.is_game_won[0]:
+                self.UI.display_game_win()
+            else:
+                self.UI.display_game_over()
 
     def communicate_with_server(self):
         while True:
             try:
-                connected_players_n = int(self.socket.recv(256).decode())
+                data = self.socket.recv(256).decode()
+                if data == "START":
+                    self.UI.lock.acquire()
+                    self.UI.connected_players_n = Cs.MAX_CONNECTED_PLAYERS_N
+                    self.UI.lock.release()
+                    break
+
+                connected_players_n = int(data)
+
             except Exception:
                 connected_players_n = Cs.MAX_CONNECTED_PLAYERS_N
 
@@ -40,16 +53,12 @@ class Client:
                 break
 
         while True:
-            if self.UI.current_direction is not None:
-                self.socket.sendall(str(self.UI.current_direction).encode())
-
-            data_received = self.socket.recv(4096)
+            data_received = self.socket.recv(16384)
             if data_received == "GAME OVER".encode():
                 break
             elif data_received == b'3':
                 print('Skipping')
             else:
-                print(data_received)
                 try:
                     new_fields_colors = pickle.loads(data_received)
                     print(new_fields_colors)

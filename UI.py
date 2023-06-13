@@ -1,8 +1,11 @@
+import json
+
 import pygame
 import sys
 import numpy as np
 import threading
 import Constants as Cs
+import Move
 from Direction import Direction
 
 
@@ -117,7 +120,7 @@ class UI:
             pygame.display.flip()
             pygame.display.update()
 
-    def display_board(self):
+    def display_board(self, client):
         fps_cap = 60
         clock = pygame.time.Clock()
         while True:
@@ -127,15 +130,20 @@ class UI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_UP:
-                    self.current_direction = Direction.NORTH
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_DOWN:
-                    self.current_direction = Direction.SOUTH
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_RIGHT:
-                    self.current_direction = Direction.EAST
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_LEFT:
-                    self.current_direction = Direction.WEST
 
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                    try:
+                        client.socket.sendall(json.dumps(Move.Move.LEFT).encode())
+                    except BrokenPipeError:
+                        return
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                    try:
+                        client.socket.sendall(json.dumps(Move.Move.RIGHT).encode())
+                    except BrokenPipeError:
+                        return
+
+            # self.lock.acquire()
             block_height = UI.WINDOW_HEIGHT // self.fields_colors.__len__()
             block_width = UI.WINDOW_WIDTH // self.fields_colors[0].__len__()
             ind_x = 0
