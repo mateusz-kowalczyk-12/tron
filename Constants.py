@@ -2,8 +2,8 @@ from enum import Enum
 
 import numpy as np
 
-BOARD_WIDTH = 32
-BOARD_HEIGHT = 32
+BOARD_WIDTH = 64
+BOARD_HEIGHT = 64
 DIRECTIONS_N = 4
 MAX_CONNECTED_PLAYERS_N = 2
 PORT = 2138

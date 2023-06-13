@@ -182,9 +182,45 @@ class UI:
             clock.tick(fps_cap)
             self.SCREEN.blit(text2, textRect)
             self.SCREEN.blit(text, textRect)
+
+            block_height = UI.WINDOW_HEIGHT // self.fields_colors.__len__()
+            block_width = UI.WINDOW_WIDTH // self.fields_colors[0].__len__()
+            ind_x = 0
+            for x in range(0, UI.WINDOW_WIDTH, block_width):
+                ind_y = 0
+                for y in range(0, UI.WINDOW_HEIGHT, block_height):
+                    rect = pygame.Rect(x, y, block_width, block_height)
+                    pygame.draw.rect(self.SCREEN, self.fields_colors[ind_x][ind_y], rect)
+                    ind_y += 1
+                ind_x += 1
+
             pygame.display.flip()
             pygame.display.update()
 
-    def read_input(self):
-        pass
+    def display_game_win(self):
+        fps_cap = 60
+        clock = pygame.time.Clock()
+        self.SCREEN.fill(UI.BLACK)
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render('A wygrał Pan Paweł', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        textRect = text.get_rect()
+        textRect.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2)
+
+        font2 = pygame.font.Font('freesansbold.ttf', 32)
+        text2 = font2.render('wciśnij spację aby kontunuować', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        textRect2 = text2.get_rect()
+        textRect2.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2 + 30)
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN or event.type == pygame.K_SPACE:
+                    return
+            clock.tick(fps_cap)
+            self.SCREEN.blit(text2, textRect)
+            self.SCREEN.blit(text, textRect)
+            pygame.display.flip()
+            pygame.display.update()
 
