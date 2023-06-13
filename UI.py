@@ -21,9 +21,7 @@ class UI:
         self.fields_colors = None
         self.SCREEN = pygame.display.set_mode((UI.WINDOW_WIDTH, UI.WINDOW_HEIGHT + UI.BOTTOM_BAR))
 
-        self.current_direction = None
         self.connected_players_n = 0
-
         self.lock = threading.Lock()
 
         self.reset_data()
@@ -36,7 +34,6 @@ class UI:
             for _ in range(Cs.BOARD_HEIGHT)
         ]
         self.connected_players_n = 0
-        self.current_direction = np.random.choice(list(Direction))
 
     def display_menu(self):
         pygame.init()
@@ -146,18 +143,22 @@ class UI:
             # self.lock.acquire()
             block_height = UI.WINDOW_HEIGHT // self.fields_colors.__len__()
             block_width = UI.WINDOW_WIDTH // self.fields_colors[0].__len__()
+            # self.lock.release()
+            
             ind_x = 0
             for x in range(0, UI.WINDOW_WIDTH, block_width):
                 ind_y = 0
                 for y in range(0, UI.WINDOW_HEIGHT, block_height):
                     rect = pygame.Rect(x, y, block_width, block_height)
+                    # self.lock.acquire()
                     pygame.draw.rect(self.SCREEN, self.fields_colors[ind_x][ind_y], rect)
+                    # self.lock.release()
                     ind_y += 1
                 ind_x += 1
             pygame.display.flip()
             pygame.display.update()
 
-    def display_game_end(self):
+    def display_game_over(self):
         fps_cap = 60
         clock = pygame.time.Clock()
         self.SCREEN.fill(UI.BLACK)
@@ -187,6 +188,3 @@ class UI:
     def read_input(self):
         pass
 
-
-# u = UI()
-# u.display_board()

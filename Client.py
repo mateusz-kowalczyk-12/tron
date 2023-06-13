@@ -55,7 +55,11 @@ class Client:
         while True:
             data_received = self.socket.recv(16384)
             if data_received == "GAME OVER".encode():
-                break
+                self.is_game_won[0] = False
+                return
+            elif data_received == "GAME WON".encode():
+                self.is_game_won[0] = True
+                return
             elif data_received == b'3':
                 print('Skipping')
             else:
