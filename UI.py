@@ -37,7 +37,7 @@ class UI:
 
     def display_menu(self):
         pygame.init()
-
+        self.SCREEN.fill(UI.BLACK)
         font = pygame.font.Font('freesansbold.ttf', 32)
         text = font.render('TRON', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect = text.get_rect()
@@ -177,7 +177,7 @@ class UI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN or event.type == pygame.K_SPACE:
+                if event.type == pygame.KEYDOWN and event.type == pygame.K_SPACE:
                     return
             clock.tick(fps_cap)
             self.SCREEN.blit(text2, textRect)
@@ -202,7 +202,7 @@ class UI:
         clock = pygame.time.Clock()
         self.SCREEN.fill(UI.BLACK)
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('A wygrał Pan Paweł', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        text = font.render('Wygrałeś', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect = text.get_rect()
         textRect.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2)
 
@@ -216,7 +216,7 @@ class UI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN or event.type == pygame.K_SPACE:
+                if event.type == pygame.KEYDOWN and event.type == pygame.K_SPACE:
                     return
             clock.tick(fps_cap)
             self.SCREEN.blit(text2, textRect)

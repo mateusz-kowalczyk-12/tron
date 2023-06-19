@@ -17,18 +17,21 @@ class Client:
 
         while True:
             self.UI.display_menu()
-            self.connect_to_server()
-            server_communication_thread = Thread(target=self.communicate_with_server)
-            server_communication_thread.start()
+            try:
+                self.connect_to_server()
+                server_communication_thread = Thread(target=self.communicate_with_server)
+                server_communication_thread.start()
 
-            self.UI.display_waiting_room()
-            self.UI.display_board(self)
-            server_communication_thread.join()
+                self.UI.display_waiting_room()
+                self.UI.display_board(self)
+                server_communication_thread.join()
 
-            if self.is_game_won[0]:
-                self.UI.display_game_win()
-            else:
-                self.UI.display_game_over()
+                if self.is_game_won[0]:
+                    self.UI.display_game_win()
+                else:
+                    self.UI.display_game_over()
+            except:
+                pass
 
     def communicate_with_server(self):
         while True:
