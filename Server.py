@@ -42,7 +42,11 @@ class Server:
         any_playing = False
         for i, conn in enumerate(self.player_sockets):
             if not self.game.is_playing[i]:
-                conn.sendall("GAME OVER".encode())
+                if sum([1 if i else 0
+                        for i in self.game.is_playing]) > 0:
+                    conn.sendall("GAME OVER".encode())
+                else:
+                    conn.sendall("GAME WON".encode())
             else:
                 any_playing = True
                 conn.sendall(pickle.dumps(self.game.get_board().fields_colors))

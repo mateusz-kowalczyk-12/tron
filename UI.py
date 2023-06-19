@@ -17,7 +17,7 @@ class UI:
     BLACK = Cs.SCOLORS['BLACK']
     WHITE = Cs.SCOLORS['WHITE']
 
-    def __init__(self):
+    def __init__(self, client):
         self.fields_colors = None
         self.SCREEN = pygame.display.set_mode((UI.WINDOW_WIDTH, UI.WINDOW_HEIGHT + UI.BOTTOM_BAR))
 
@@ -25,6 +25,7 @@ class UI:
         self.lock = threading.Lock()
 
         self.reset_data()
+        self.client = client
 
     def reset_data(self):
         self.CLOCK = pygame.time.Clock()
@@ -120,7 +121,7 @@ class UI:
     def display_board(self, client):
         fps_cap = 60
         clock = pygame.time.Clock()
-        while True:
+        while self.client.is_game_won[0] is None:
             clock.tick(fps_cap)
 
             for event in pygame.event.get():
@@ -159,16 +160,15 @@ class UI:
             pygame.display.update()
 
     def display_game_over(self):
-        fps_cap = 60
-        clock = pygame.time.Clock()
+        pygame.init()
         self.SCREEN.fill(UI.BLACK)
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('A wygrał Pan Paweł', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        text = font.render('Koniec gry', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect = text.get_rect()
         textRect.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2)
 
         font2 = pygame.font.Font('freesansbold.ttf', 32)
-        text2 = font2.render('wciśnij spację aby kontunuować', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        text2 = font2.render('Przegrałeś', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect2 = text2.get_rect()
         textRect2.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2 + 30)
 
@@ -177,37 +177,23 @@ class UI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_SPACE:
+                if event.type == pygame.KEYDOWN or event.type == pygame.K_SPACE:
                     return
-            clock.tick(fps_cap)
-            self.SCREEN.blit(text2, textRect)
             self.SCREEN.blit(text, textRect)
+            self.SCREEN.blit(text2, textRect2)
 
-            block_height = UI.WINDOW_HEIGHT // self.fields_colors.__len__()
-            block_width = UI.WINDOW_WIDTH // self.fields_colors[0].__len__()
-            ind_x = 0
-            for x in range(0, UI.WINDOW_WIDTH, block_width):
-                ind_y = 0
-                for y in range(0, UI.WINDOW_HEIGHT, block_height):
-                    rect = pygame.Rect(x, y, block_width, block_height)
-                    pygame.draw.rect(self.SCREEN, self.fields_colors[ind_x][ind_y], rect)
-                    ind_y += 1
-                ind_x += 1
-
-            pygame.display.flip()
             pygame.display.update()
 
     def display_game_win(self):
-        fps_cap = 60
-        clock = pygame.time.Clock()
+        pygame.init()
         self.SCREEN.fill(UI.BLACK)
         font = pygame.font.Font('freesansbold.ttf', 32)
-        text = font.render('Wygrałeś', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        text = font.render('Koniec gry', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect = text.get_rect()
         textRect.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2)
 
         font2 = pygame.font.Font('freesansbold.ttf', 32)
-        text2 = font2.render('wciśnij spację aby kontunuować', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
+        text2 = font2.render('Wygrałeś', True, Cs.SCOLORS['GREEN'], Cs.SCOLORS['BLACK'])
         textRect2 = text2.get_rect()
         textRect2.center = (self.WINDOW_WIDTH // 2, self.WINDOW_HEIGHT // 2 + 30)
 
@@ -216,11 +202,10 @@ class UI:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN and event.type == pygame.K_SPACE:
+                if event.type == pygame.KEYDOWN or event.type == pygame.K_SPACE:
                     return
-            clock.tick(fps_cap)
-            self.SCREEN.blit(text2, textRect)
             self.SCREEN.blit(text, textRect)
-            pygame.display.flip()
+            self.SCREEN.blit(text2, textRect2)
+
             pygame.display.update()
 

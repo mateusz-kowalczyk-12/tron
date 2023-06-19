@@ -12,7 +12,7 @@ class Client:
     def __init__(self):
         self.color = None
         self.socket = None
-        self.UI = UI()
+        self.UI = UI(self)
         self.is_game_won = [None]
 
         while True:
@@ -24,7 +24,9 @@ class Client:
 
                 self.UI.display_waiting_room()
                 self.UI.display_board(self)
+                print('Waiting to join')
                 server_communication_thread.join()
+                print('Joined')
 
                 if self.is_game_won[0]:
                     self.UI.display_game_win()
@@ -59,6 +61,7 @@ class Client:
             data_received = self.socket.recv(16384)
             if data_received == "GAME OVER".encode():
                 self.is_game_won[0] = False
+
                 return
             elif data_received == "GAME WON".encode():
                 self.is_game_won[0] = True
@@ -68,7 +71,6 @@ class Client:
             else:
                 try:
                     new_fields_colors = pickle.loads(data_received)
-                    print(new_fields_colors)
                     self.UI.fields_colors = new_fields_colors
                 except Exception:
                     pass
